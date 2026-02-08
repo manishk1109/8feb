@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Propose Day ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Poppins:wght@400;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #ffecd2;
+            background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            touch-action: none; 
+        }
+
+        /* --- PARTICLES --- */
+        .bg-particle {
+            position: absolute;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            animation: float 10s infinite linear;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0.5); }
+            100% { transform: translateY(-10vh) scale(1); }
+        }
+
+        /* --- STACK --- */
+        .stack-container {
+            position: relative;
+            width: 300px;
+            height: 480px;
+            z-index: 10;
+        }
+
+        /* --- CARD STYLING --- */
+        .card {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transform-origin: 50% 100%;
+            cursor: grab;
+            transition: transform 0.1s linear;
+            user-select: none;
+            border: 8px solid white;
+            /* Ensure background is white to cover cards behind */
+            background-color: #fff; 
+        }
+
+        /* --- CONTENT TRANSITIONS --- */
+        /* This fixes the text clutter issue */
+        .card > * {
+            transition: opacity 0.3s ease;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 20px; right: 20px;
+            font-size: 0.9rem;
+            color: #ddd;
+            font-weight: 700;
+        }
+
+        .emoji-zone {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1));
+            transform: scale(1);
+            transition: transform 0.3s;
+        }
+
+        .card:hover .emoji-zone { transform: scale(1.1) rotate(5deg); }
+
+        .title {
+            font-size: 1.4rem;
+            color: #ff6b6b;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .desc {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .handwritten {
+            font-family: 'Caveat', cursive;
+            font-size: 1.6rem;
+            color: #888;
+            margin-top: auto;
+            transform: rotate(-2deg);
+            padding-bottom: 10px;
+        }
+
+        /* --- FINAL CARD --- */
+        .card.final {
+            background: linear-gradient(135deg, #fff 0%, #fff0f0 100%);
+            border: 4px solid #ff6b6b;
+        }
+
+        .btn-yes {
+            margin-top: 20px;
+            padding: 15px 50px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+            animation: pulse 1.5s infinite;
+        }
+
+        /* --- SUCCESS OVERLAY --- */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s; z-index: 100;
+            text-align: center;
+            padding: 20px;
+        }
+        .overlay.visible { opacity: 1; pointer-events: all; }
+
+        .congrats-title {
+            font-family: 'Caveat', cursive;
+            font-size: 3rem;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            line-height: 1;
+        }
+
+        .photo-frame {
+            width: 250px;
+            height: 300px;
+            background: white;
+            padding: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-radius: 4px;
+            transform: rotate(-3deg);
+            margin-bottom: 25px;
+            animation: photoDrop 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s forwards;
+            opacity: 0;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+
+        .congrats-subtitle {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 10px;
+            animation: fadeIn 1s ease 0.8s forwards;
+            opacity: 0;
+            max-width: 300px;
+            line-height: 1.5;
+        }
+
+        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes photoDrop { from { transform: translateY(-50px) rotate(0deg); opacity: 0; } to { transform: translateY(0) rotate(-3deg); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+        .hint {
+            position: absolute;
+            bottom: 30px;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            animation: bounce 2s infinite;
+            pointer-events: none;
+        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+        /* Animation for swiping out */
+        .swiped-right { animation: flyOutRight 0.6s forwards; }
+        .swiped-left { animation: flyOutLeft 0.6s forwards; }
+
+        @keyframes flyOutRight { to { transform: translate(120vw, 100px) rotate(45deg); opacity: 0; } }
+        @keyframes flyOutLeft { to { transform: translate(-120vw, 100px) rotate(-45deg); opacity: 0; } }
+
+    </style>
+</head>
+<body>
+
+    <div id="particles"></div>
+    <div class="hint">Swipe the cards...</div>
+
+    <div class="stack-container" id="stack">
+        
+        <div class="card final" data-index="9">
+            <div class="card-number">10/10</div>
+            <div class="emoji-zone">💍</div>
+            <div class="title">The Big Question</div>
+            <div class="desc">I don't just want you for today. I want you for every single day after this.</div>
+            <div class="handwritten">Will you be mine?</div>
+            <button class="btn-yes" onclick="accept()">YES</button>
+        </div>
+
+        <div class="card" data-index="8">
+            <div class="card-number">9/10</div>
+            <div class="emoji-zone">🔮</div>
+            <div class="title">The Future</div>
+            <div class="desc">Every plan I make for the future somehow includes you in it.</div>
+            <div class="handwritten">It just looks better with you.</div>
+        </div>
+
+        <div class="card" data-index="7">
+            <div class="card-number">8/10</div>
+            <div class="emoji-zone">🫂</div>
+            <div class="title">The Comfort</div>
+            <div class="desc">You are the only person who can calm my chaos.</div>
+            <div class="handwritten">My human charger.</div>
+        </div>
+
+        <div class="card" data-index="6">
+            <div class="card-number">7/10</div>
+            <div class="emoji-zone">🛡️</div>
+            <div class="title">The Support System</div>
+            <div class="desc">Rough day at Flipkart? I'm your safe space to vent, rant, or just breathe.</div>
+            <div class="handwritten">Always in your corner.</div>
+        </div>
+
+        <div class="card" data-index="5">
+            <div class="card-number">6/10</div>
+            <div class="emoji-zone">🎁</div>
+            <div class="title">The Effort</div>
+            <div class="desc">Who else is gonna code websites for you at 2 AM?</div>
+            <div class="handwritten">Only me.</div>
+        </div>
+
+        <div class="card" data-index="4">
+            <div class="card-number">5/10</div>
+            <div class="emoji-zone">😂</div>
+            <div class="title">The Drama</div>
+            <div class="desc">Life is boring. We keep it interesting.</div>
+            <div class="handwritten">Partner in crime.</div>
+        </div>
+
+        <div class="card" data-index="3">
+            <div class="card-number">4/10</div>
+            <div class="emoji-zone">📞</div>
+            <div class="title">The Distance</div>
+            <div class="desc">Miles apart, but I'm still the first person you want to tell your day to.</div>
+            <div class="handwritten">Always connected.</div>
+        </div>
+
+        <div class="card" data-index="2">
+            <div class="card-number">3/10</div>
+            <div class="emoji-zone">🥺</div>
+            <div class="title">The Soft Spot</div>
+            <div class="desc">I've seen your stressed side and your happy side.</div>
+            <div class="handwritten">I love both.</div>
+        </div>
+
+        <div class="card" data-index="1">
+            <div class="card-number">2/10</div>
+            <div class="emoji-zone">🧩</div>
+            <div class="title">The Fit</div>
+            <div class="desc">We just make sense. No forcing it.</div>
+            <div class="handwritten">Like a missing piece.</div>
+        </div>
+
+        <div class="card" data-index="0">
+            <div class="card-number">1/10</div>
+            <div class="emoji-zone">🌹</div>
+            <div class="title">Happy Propose Day</div>
+            <div class="desc">Since today is special, here are 10 reasons why you need to stuck with me.</div>
+            <div class="handwritten">Swipe to see -></div>
+        </div>
+
+    </div>
+
+    <div class="overlay" id="overlay">
+        <h1 class="congrats-title">Happy Propose Day ❤️</h1>
+        
+        <div class="photo-frame">
+            <img src="aish.jpg" alt="Us">
+        </div>
+        
+        <p class="congrats-subtitle">
+            I want to spend my today, tomorrow, and my entire life with you.<br>
+            <strong>I wanna grow old with you.</strong>
+        </p>
+    </div>
+
+    <script>
+        // --- BACKGROUND PARTICLES ---
+        const bg = document.getElementById('particles');
+        for(let i=0; i<20; i++){
+            let p = document.createElement('div');
+            p.classList.add('bg-particle');
+            let size = Math.random() * 20 + 10;
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            p.style.animationDelay = (Math.random() * 5) + 's';
+            bg.appendChild(p);
+        }
+
+        // --- CARD LOGIC ---
+        let cards = Array.from(document.querySelectorAll('.card')).sort((a, b) => {
+            return a.dataset.index - b.dataset.index;
+        });
+
+        let currentIndex = 0;
+
+        function updateStack() {
+            cards.forEach((card, index) => {
+                let dist = index - currentIndex;
+                card.style.transformOrigin = "50% 100%";
+                
+                // Get all content elements inside the card
+                const content = card.querySelectorAll('.card-number, .emoji-zone, .title, .desc, .handwritten, .btn-yes');
+
+                if (index < currentIndex) {
+                    return; // Already swiped
+                }
+
+                if (index === currentIndex) {
+                    // TOP CARD - Show content
+                    card.style.transform = `scale(1) translateY(0) rotate(0deg)`;
+                    card.style.zIndex = 100;
+                    card.style.opacity = 1;
+                    card.style.pointerEvents = 'all';
+                    content.forEach(el => el.style.opacity = '1'); // Show text
+                    setupDrag(card);
+                } else {
+                    // BACKGROUND CARDS - Hide content
+                    if (dist > 3) {
+                        card.style.opacity = 0;
+                        card.style.zIndex = 0;
+                        return;
+                    }
+                    let scale = 1 - (dist * 0.05);
+                    let translateY = dist * 15;
+                    let rotate = (dist % 2 === 0) ? 2 : -2;
+
+                    card.style.transform = `scale(${scale}) translateY(${translateY}px) rotate(${rotate}deg)`;
+                    card.style.zIndex = 100 - dist;
+                    card.style.opacity = 1;
+                    card.style.pointerEvents = 'none';
+                    content.forEach(el => el.style.opacity = '0'); // Hide text so it doesn't overlap
+                }
+            });
+            
+            if (currentIndex === 9) document.querySelector('.hint').style.opacity = 0;
+        }
+
+        // --- DRAG LOGIC ---
+        let startX, currentX, isDragging = false;
+        let currentCardDOM;
+
+        function setupDrag(card) {
+            currentCardDOM = card;
+            card.addEventListener('mousedown', dragStart);
+            card.addEventListener('touchstart', dragStart);
+        }
+
+        function dragStart(e) {
+            if (currentIndex === 9) return; 
+            isDragging = true;
+            startX = (e.type === 'mousedown') ? e.clientX : e.touches[0].clientX;
+            document.addEventListener('mousemove', dragMove);
+            document.addEventListener('touchmove', dragMove);
+            document.addEventListener('mouseup', dragEnd);
+            document.addEventListener('touchend', dragEnd);
+        }
+
+        function dragMove(e) {
+            if (!isDragging) return;
+            let x = (e.type === 'mousemove') ? e.clientX : e.touches[0].clientX;
+            currentX = x - startX;
+            let rotate = currentX * 0.1;
+            currentCardDOM.style.transform = `translateX(${currentX}px) rotate(${rotate}deg)`;
+        }
+
+        function dragEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+            document.removeEventListener('mousemove', dragMove);
+            document.removeEventListener('touchmove', dragMove);
+            document.removeEventListener('mouseup', dragEnd);
+            document.removeEventListener('touchend', dragEnd);
+
+            if (Math.abs(currentX) > 100) {
+                let dir = currentX > 0 ? 'swiped-right' : 'swiped-left';
+                currentCardDOM.classList.add(dir);
+                currentIndex++;
+                setTimeout(updateStack, 200);
+            } else {
+                currentCardDOM.style.transform = `scale(1) translateY(0) rotate(0deg)`;
+            }
+        }
+
+        function accept() {
+            document.getElementById('overlay').classList.add('visible');
+            for(let i=0; i<100; i++) {
+                setTimeout(() => createConfetti(), i * 20);
+            }
+        }
+
+        function createConfetti() {
+            let c = document.createElement('div');
+            c.style.position = 'absolute';
+            c.style.width = Math.random() * 10 + 5 + 'px';
+            c.style.height = c.style.width;
+            c.style.background = ['#ff6b6b', '#ffd93d', '#6c5ce7', '#00d2d3'][Math.floor(Math.random()*4)];
+            c.style.left = Math.random()*100 + 'vw';
+            c.style.top = '-10px';
+            c.style.borderRadius = '50%';
+            c.style.zIndex = '200';
+            c.style.transition = 'top 3s ease-in, transform 3s linear';
+            document.body.appendChild(c);
+            void c.offsetWidth;
+            c.style.top = '110vh';
+            c.style.transform = `rotate(${Math.random()*360}deg)`;
+            setTimeout(() => c.remove(), 3000);
+        }
+
+        updateStack();
+    </script>
+</body>
+</html>
